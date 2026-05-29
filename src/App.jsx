@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import SikayetFormu from './SikayetFormu.jsx';
 
 function App() {
-  // Canlı İhbar Verileri
+  // Canlı İhbar Verileri (Yaptığın güncellemeler korundu)
   const [ihbarlar, setIhbarlar] = useState([
     {
       id: 1,
@@ -35,7 +36,7 @@ function App() {
     }
   ]);
 
-  // Liderlik Tablosu Verileri
+  // Liderlik Tablosu Verileri (Yaptığın güncellemeler korundu)
   const [liderler] = useState([
     { sira: 1, isim: "Selin Yazıcı", puan: "1250 ", ihbar: 24, rozet: "🏆 Mahalle Kahramanı" },
     { sira: 2, isim: "Sinem Tütüncü", puan: "950 ", ihbar: 18, rozet: "🌟 Çevre Dostu" },
@@ -43,9 +44,10 @@ function App() {
     { sira: 4, isim: "Ayşe Demir", puan: "650 ", ihbar: 11, rozet: "🌱 Yeni Filiz" }
   ]);
 
-  // Aktif Sayfa ve Filtre Durumları
-  const [aktifSekme, setAktifSekme] = useState('panel'); // 'panel', 'harita', 'liderlik'
-  const [durumFiltresi, setDurumFiltresi] = useState('Hepsi'); // 'Hepsi', 'Beklemede', 'Çözüldü'
+  // Eksik olan durum (state) tanımlamaları buraya eklendi
+  const [modalAcik, setModalAcik] = useState(false);
+  const [aktifSekme, setAktifSekme] = useState('panel'); 
+  const [durumFiltresi, setDurumFiltresi] = useState('Hepsi'); 
   const [secilenIhbar, setSecilenIhbar] = useState(ihbarlar[0]);
   const [toplamYesilPuan, setToplamYesilPuan] = useState(450);
   const [cozulenSayisi, setCozulenSayisi] = useState(12);
@@ -62,6 +64,22 @@ function App() {
     setSecilenIhbar(prev => ({ ...prev, durum: 'Çözüldü' }));
     setToplamYesilPuan(prev => prev + 50);
     setCozulenSayisi(prev => prev + 1);
+  };
+
+  // Yeni Şikayeti Listeye Ekleme Fonksiyonu
+  const haneSikayetEkle = (yeniVeri) => {
+    const yeniSikayet = {
+      id: ihbarlar.length + 1,
+      baslik: yeniVeri.baslik,
+      konum: yeniVeri.konum,
+      durum: "Beklemede",
+      fotograf: yeniVeri.fotograf || "https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=500",
+      tarih: "29.05.2026",
+      bildiren: yeniVeri.bildiren || "Anonim Personel",
+      rozet: "Saha Ekibi 🛠️"
+    };
+    setIhbarlar([yeniSikayet, ...ihbarlar]);
+    setSecilenIhbar(yeniSikayet);
   };
 
   // Filtreye göre ihbarları ayıkla
@@ -99,8 +117,25 @@ function App() {
           >
             🏆 Liderlik Tablosu
           </div>
+
+          {/* İSTEDİĞİN BUTON SOL MENÜDEKİ DOĞRU YERİNE ALINDI */}
+          <button 
+            onClick={() => setModalAcik(true)}
+            style={{
+              marginTop: '20px',
+              padding: '12px',
+              backgroundColor: '#2ecc71',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
+            ➕ Yeni Şikayet Oluştur
+          </button>
         </div>
-        <div style={{ fontSize: '11px', color: '#7f8c8d', textAlign: 'center' }}>Belediye Yönetim Sistemi v1.2</div>
+        <div style={{ fontSize: '11px', color: '#7f8c8d', textAlign: 'center' }}>Belediye Yönetim Sistemi</div>
       </div>
 
       {/* SAĞ İÇERİK ALANI */}
@@ -122,10 +157,9 @@ function App() {
         {aktifSekme === 'panel' && (
           <div style={{ display: 'flex', gap: '25px', flex: 1, minHeight: '400px' }}>
             
-            {/* Sol Liste + Durum Butonları */}
+            {/* Sol Liste */}
             <div style={{ width: '40%', backgroundColor: 'white', borderRadius: '10px', padding: '15px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               
-              {/* İstenen Beklemede/Çözüldü Filtre Butonları */}
               <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f4f6f9', paddingBottom: '10px' }}>
                 {['Hepsi', 'Beklemede', 'Çözüldü'].map((durum) => (
                   <button
@@ -224,7 +258,7 @@ function App() {
           </div>
         )}
 
-        {/* 3. SEKME: İÇİ DOLU LİDERLİK TABLOSU */}
+        {/* 3. SEKME: LIDERLIK TABLOSU */}
         {aktifSekme === 'liderlik' && (
           <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', flex: 1 }}>
             <h3 style={{ margin: '0 0 10px 0', color: '#2c3e50' }}>🏆 En Çok Katkı Sağlayan Çevre Gönüllüleri</h3>
@@ -247,7 +281,7 @@ function App() {
                     <td style={{ padding: '12px', fontWeight: '500' }}>{lider.isim}</td>
                     <td style={{ padding: '12px' }}>{lider.rozet}</td>
                     <td style={{ padding: '12px', color: '#3498db', fontWeight: 'bold' }}>{lider.ihbar} Adet</td>
-                    <td style={{ padding: '12px', color: '#2ecc71', fontWeight: 'bold' }}>{lider.puan}</td>
+                    <td style={{ padding: '12px', color: '#2ecc71', fontWeight: 'bold' }}>{lider.puan} WP</td>
                   </tr>
                 ))}
               </tbody>
@@ -256,6 +290,10 @@ function App() {
         )}
 
       </div>
+
+      {/* ŞİKAYET FORMU BAĞLANTISI BURAYA EKLENDİ */}
+      <SikayetFormu modalAcik={modalAcik} setModalAcik={setModalAcik} onSikayetEkle={haneSikayetEkle} />
+
     </div>
   );
 }
