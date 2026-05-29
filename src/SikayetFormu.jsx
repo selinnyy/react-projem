@@ -5,6 +5,33 @@ function SikayetFormu({ modalAcik, setModalAcik, onSikayetEkle }) {
   const [yeniKonum, setYeniKonum] = useState('');
   const [yeniBildiren, setYeniBildiren] = useState('');
   const [yeniFoto, setYeniFoto] = useState('');
+  const [konumYukleniyor, setKonumYukleniyor] = useState(false);
+
+  // Cihazın GPS/Harita Konumunu Alacak Akıllı Fonksiyon
+  const konumumuBul = () => {
+    if (!navigator.geolocation) {
+      alert("Tarayıcınız konum özelliğini desteklemiyor.");
+      return;
+    }
+
+    setKonumYukleniyor(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const enlem = position.coords.latitude.toFixed(4);
+        const boylam = position.coords.longitude.toFixed(4);
+        // Otomatik olarak konum input alanını doldurur
+        setYeniKonum(`GPS: ${enlem}, ${boylam} (Mevcut Cihaz Konumu)`);
+        setKonumYukleniyor(false);
+      },
+      (error) => {
+        console.error(error);
+        alert("Konum alınamadı. Lütfen cihazınızda/tarayıcınızda konum izni verdiğinizden emin olun.");
+        setKonumYukleniyor(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,14 +60,47 @@ function SikayetFormu({ modalAcik, setModalAcik, onSikayetEkle }) {
         <h3 style={{ margin: '0 0 10px 0', color: '#2c3e50', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>➕ Yeni Çevre İhbarı Kaydı</h3>
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
             <label style={{ fontSize: '13px', fontWeight: 'bold', color: '#7f8c8d' }}>Şikayet Başlığı *</label>
             <input type="text" placeholder="Örn: Parkta Kırık Banklar" value={yeniBaslik} onChange={(e) => setYeniBaslik(e.target.value)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e1' }} required />
           </div>
 
+          {/* KONUM ALANI VE OTOMATİK BUL BUTONU */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 'bold', color: '#7f8c8d' }}>Konum (İlçe, Mahalle) *</label>
-            <input type="text" placeholder="Örn: Atakum, Yenimahalle" value={yeniKonum} onChange={(e) => setYeniKonum(e.target.value)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e1' }} required />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label style={{ fontSize: '13px', fontWeight: 'bold', color: '#7f8c8d' }}>Konum (İlçe, Mahalle veya GPS) *</label>
+              
+              {/* Konum Bulucu Buton */}
+              <button 
+                type="button" 
+                onClick={konumumuBul}
+                disabled={konumYukleniyor}
+                style={{
+                  padding: '4px 8px',
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                {konumYukleniyor ? "🔄 Bulunuyor..." : "📍 Konumumu Otomatik Bul"}
+              </button>
+            </div>
+            <input 
+              type="text" 
+              placeholder="Örn: Atakum, Yenimahalle veya otomatik butonunu kullanın" 
+              value={yeniKonum} 
+              onChange={(e) => setYeniKonum(e.target.value)} 
+              style={{ padding: '8px', borderRadius: '4px', border: '1px solid #cbd5e1' }} 
+              required 
+            />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
