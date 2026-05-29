@@ -7,8 +7,8 @@ export default function AnaSayfa({ setAktifSekme, toplamIhbar, cozulenSayisi }) 
   return (
     <div className="home-wrapper">
       <header className="header-section">
-        <h1 className="title-gradient">BİR FOTOĞRAF YETER</h1>
-        <p className="slogan">ÇEVRENİ DEĞİŞTİR, GELECEĞİ KURTAR</p>
+        <h1 className="title-gradient"> BİZİM ÇEVRE'YE HOŞ GELDİN 🌿   </h1>
+        <p className="slogan">Bir fotoğrafla çevreni değiştirebilirsin ✨ </p>
       </header>
 
       <section className="ba-container">
