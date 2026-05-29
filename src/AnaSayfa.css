@@ -56,3 +56,24 @@
   transition: 0.3s;
 }
 .start-btn:hover { background: #1b5e20; transform: translateY(-3px); }
+/* Hamburger Menü Butonu */
+.menu-trigger {
+  position: absolute; top: 20px; left: 20px; z-index: 100;
+  cursor: pointer; font-size: 2.5rem; color: #2e7d32;
+}
+
+/* Yan Menü Tasarımı */
+.sidebar {
+  position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+  background: #1b5e20; color: white; transition: 0.4s; z-index: 200;
+  padding-top: 80px; box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+}
+.sidebar.active { left: 0; }
+.sidebar a { 
+  display: block; padding: 20px; color: white; 
+  text-decoration: none; border-bottom: 1px solid #2e7d32; 
+  font-size: 1.2rem;
+}
+.sidebar a:hover { background: #2e7d32; }
+.main-content { transition: 0.4s; padding: 20px; }
+.page-wrapper.menu-open .main-content { margin-left: 280px; }
