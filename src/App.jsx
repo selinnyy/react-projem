@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import SikayetFormu from './SikayetFormu.jsx';
+import AnaSayfa from './AnaSayfa.jsx'; // Yeni oluşturduğumuz sayfa eklendi
 
 function App() {
-  // Canlı İhbar Verileri (Yaptığın güncellemeler korundu)
+  // Canlı İhbar Verileri
   const [ihbarlar, setIhbarlar] = useState([
     {
       id: 1,
@@ -36,7 +37,6 @@ function App() {
     }
   ]);
 
-  // Liderlik Tablosu Verileri (Yaptığın güncellemeler korundu)
   const [liderler] = useState([
     { sira: 1, isim: "Selin Yazıcı", puan: "1250 ", ihbar: 24, rozet: "🏆 Mahalle Kahramanı" },
     { sira: 2, isim: "Sinem Tütüncü", puan: "950 ", ihbar: 18, rozet: "🌟 Çevre Dostu" },
@@ -44,20 +44,17 @@ function App() {
     { sira: 4, isim: "Ayşe Demir", puan: "650 ", ihbar: 11, rozet: "🌱 Yeni Filiz" }
   ]);
 
-  // Eksik olan durum (state) tanımlamaları buraya eklendi
-  const [modalAcik, setModalAcik] = useState(false);
-  const [aktifSekme, setAktifSekme] = useState('panel'); 
+  // Varsayılan olarak uygulama artık ANASAYFA ile açılıyor
+  const [aktifSekme, setAktifSekme] = useState('anasayfa'); 
   const [durumFiltresi, setDurumFiltresi] = useState('Hepsi'); 
   const [secilenIhbar, setSecilenIhbar] = useState(ihbarlar[0]);
   const [toplamYesilPuan, setToplamYesilPuan] = useState(450);
   const [cozulenSayisi, setCozulenSayisi] = useState(12);
+  const [modalAcik, setModalAcik] = useState(false);
 
-  // İhbar Çözme Fonksiyonu
   const sorunuCoz = (id) => {
     const guncelList = ihbarlar.map((ihbar) => {
-      if (ihbar.id === id) {
-        return { ...ihbar, durum: 'Çözüldü' };
-      }
+      if (ihbar.id === id) return { ...ihbar, durum: 'Çözüldü' };
       return ihbar;
     });
     setIhbarlar(guncelList);
@@ -66,7 +63,6 @@ function App() {
     setCozulenSayisi(prev => prev + 1);
   };
 
-  // Yeni Şikayeti Listeye Ekleme Fonksiyonu
   const haneSikayetEkle = (yeniVeri) => {
     const yeniSikayet = {
       id: ihbarlar.length + 1,
@@ -80,9 +76,9 @@ function App() {
     };
     setIhbarlar([yeniSikayet, ...ihbarlar]);
     setSecilenIhbar(yeniSikayet);
+    setAktifSekme('panel'); // Ekledikten sonra canlı takip paneline yönlendir
   };
 
-  // Filtreye göre ihbarları ayıkla
   const filtrelenmisIhbarlar = ihbarlar.filter(ihbar => {
     if (durumFiltresi === 'Hepsi') return true;
     return ihbar.durum === durumFiltresi;
@@ -99,6 +95,13 @@ function App() {
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+          {/* YENİ ANASAYFA SEKRESİ */}
+          <div 
+            onClick={() => setAktifSekme('anasayfa')}
+            style={{ padding: '12px', backgroundColor: aktifSekme === 'anasayfa' ? '#34495e' : 'transparent', borderRadius: '6px', fontWeight: aktifSekme === 'anasayfa' ? 'bold' : 'normal', color: aktifSekme === 'anasayfa' ? '#2ecc71' : '#bdc3c7', cursor: 'pointer', transition: '0.2s' }}
+          >
+            🏠 Hoşgeldiniz / Anasayfa
+          </div>
           <div 
             onClick={() => setAktifSekme('panel')}
             style={{ padding: '12px', backgroundColor: aktifSekme === 'panel' ? '#34495e' : 'transparent', borderRadius: '6px', fontWeight: aktifSekme === 'panel' ? 'bold' : 'normal', color: aktifSekme === 'panel' ? '#2ecc71' : '#bdc3c7', cursor: 'pointer', transition: '0.2s' }}
@@ -118,7 +121,6 @@ function App() {
             🏆 Liderlik Tablosu
           </div>
 
-          {/* İSTEDİĞİN BUTON SOL MENÜDEKİ DOĞRU YERİNE ALINDI */}
           <button 
             onClick={() => setModalAcik(true)}
             style={{
@@ -141,51 +143,57 @@ function App() {
       {/* SAĞ İÇERİK ALANI */}
       <div style={{ flex: 1, padding: '25px', display: 'flex', flexDirection: 'column', gap: '25px', overflowY: 'auto' }}>
         
-        {/* ÜST İSTATİSTİKLER */}
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <div style={{ flex: 1, backgroundColor: 'white', padding: '20px', borderRadius: '10px', borderLeft: '5px solid #2ecc71', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '13px', color: '#7f8c8d', fontWeight: 'bold' }}>TOPLAM TOPLANAN YEŞİL PUAN</div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#2c3e50', marginTop: '5px' }}>💚 {toplamYesilPuan} WP</div>
-          </div>
-          <div style={{ flex: 1, backgroundColor: 'white', padding: '20px', borderRadius: '10px', borderLeft: '5px solid #3498db', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '13px', color: '#7f8c8d', fontWeight: 'bold' }}>BU AY ÇÖZÜLEN İHBARLAR</div>
-            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#2c3e50', marginTop: '5px' }}>✅ {cozulenSayisi} Adet</div>
-          </div>
-        </div>
+        {/* 0. SEKME: EN YENİ ANASAYFA GÖRÜNÜMÜ */}
+        {aktifSekme === 'anasayfa' && (
+          <AnaSayfa 
+            setAktifSekme={setAktifSekme} 
+            setModalAcik={setModalAcik} 
+            toplamIhbar={ihbarlar.length} 
+            cozulenSayisi={cozulenSayisi} 
+          />
+        )}
 
         {/* 1. SEKME: CANLI TAKİP PANELİ */}
         {aktifSekme === 'panel' && (
-          <div style={{ display: 'flex', gap: '25px', flex: 1, minHeight: '400px' }}>
-            
-            {/* Sol Liste */}
-            <div style={{ width: '40%', backgroundColor: 'white', borderRadius: '10px', padding: '15px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              
-              <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f4f6f9', paddingBottom: '10px' }}>
-                {['Hepsi', 'Beklemede', 'Çözüldü'].map((durum) => (
-                  <button
-                    key={durum}
-                    onClick={() => setDurumFiltresi(durum)}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: '20px',
-                      border: 'none',
-                      backgroundColor: durumFiltresi === durum ? '#2ecc71' : '#e2e8f0',
-                      color: durumFiltresi === durum ? 'white' : '#7f8c8d',
-                      fontWeight: 'bold',
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {durum}
-                  </button>
-                ))}
+          <>
+            {/* ÜST İSTATİSTİKLER (Sadece yönetim panelinde gözüksün) */}
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div style={{ flex: 1, backgroundColor: 'white', padding: '20px', borderRadius: '10px', borderLeft: '5px solid #2ecc71', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                <div style={{ fontSize: '13px', color: '#7f8c8d', fontWeight: 'bold' }}>TOPLAM TOPLANAN YEŞİL PUAN</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#2c3e50', marginTop: '5px' }}>💚 {toplamYesilPuan} WP</div>
               </div>
+              <div style={{ flex: 1, backgroundColor: 'white', padding: '20px', borderRadius: '10px', borderLeft: '5px solid #3498db', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                <div style={{ fontSize: '13px', color: '#7f8c8d', fontWeight: 'bold' }}>BU AY ÇÖZÜLEN İHBARLAR</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#2c3e50', marginTop: '5px' }}>✅ {cozulenSayisi} Adet</div>
+              </div>
+            </div>
 
-              <div style={{ overflowY: 'auto', flex: 1 }}>
-                {filtrelenmisIhbarlar.length === 0 ? (
-                  <p style={{ color: '#7f8c8d', fontSize: '14px', textAlign: 'center', marginTop: '20px' }}>Bu kategoride ihbar bulunmuyor.</p>
-                ) : (
-                  filtrelenmisIhbarlar.map((ihbar) => (
+            <div style={{ display: 'flex', gap: '25px', flex: 1, minHeight: '400px' }}>
+              {/* Sol Liste */}
+              <div style={{ width: '40%', backgroundColor: 'white', borderRadius: '10px', padding: '15px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #f4f6f9', paddingBottom: '10px' }}>
+                  {['Hepsi', 'Beklemede', 'Çözüldü'].map((durum) => (
+                    <button
+                      key={durum}
+                      onClick={() => setDurumFiltresi(durum)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        border: 'none',
+                        backgroundColor: durumFiltresi === durum ? '#2ecc71' : '#e2e8f0',
+                        color: durumFiltresi === durum ? 'white' : '#7f8c8d',
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {durum}
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{ overflowY: 'auto', flex: 1 }}>
+                  {filtrelenmisIhbarlar.map((ihbar) => (
                     <div 
                       key={ihbar.id} 
                       onClick={() => setSecilenIhbar(ihbar)}
@@ -204,66 +212,58 @@ function App() {
                       </div>
                       <div style={{ fontSize: '12px', color: '#7f8c8d', marginTop: '4px' }}>📍 {ihbar.konum}</div>
                     </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Sağ Detay */}
-            <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '10px', padding: '20px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <h4 style={{ margin: '0', color: '#2c3e50' }}>🔍 İhbar Detayı</h4>
-              <div style={{ display: 'flex', gap: '15px' }}>
-                <img src={secilenIhbar.fotograf} alt={secilenIhbar.baslik} style={{ width: '150px', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
-                <div>
-                  <h3 style={{ margin: '0 0 8px 0', color: '#2c3e50' }}>{secilenIhbar.baslik}</h3>
-                  <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Konum:</strong> {secilenIhbar.konum}</p>
-                  <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Bildiren:</strong> {secilenIhbar.bildiren} ({secilenIhbar.rozet})</p>
-                  <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Tarih:</strong> {secilenIhbar.tarih}</p>
+                  ))}
                 </div>
               </div>
 
-              <div style={{ flex: 1, backgroundColor: '#e3edf7', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a69bd', minHeight: '120px', border: '1px dashed #4a69bd' }}>
-                <strong>🗺️ GPS Canlı Harita Takibi Aktif ({secilenIhbar.konum})</strong>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                {secilenIhbar.durum === 'Beklemede' ? (
-                  <button onClick={() => sorunuCoz(secilenIhbar.id)} style={{ padding: '10px 20px', backgroundColor: '#2ecc71', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
-                    Saha Ekibini Yönlendir & Çöz ✅
-                  </button>
-                ) : (
-                  <div style={{ padding: '10px 20px', backgroundColor: '#e8f5e9', color: '#2ecc71', fontWeight: 'bold', borderRadius: '6px' }}>
-                    🎉 Sorun Başarıyla Çözüldü!
+              {/* Sağ Detay */}
+              <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '10px', padding: '20px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <h4 style={{ margin: '0', color: '#2c3e50' }}>🔍 İhbar Detayı</h4>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  <img src={secilenIhbar.fotograf} alt={secilenIhbar.baslik} style={{ width: '150px', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
+                  <div>
+                    <h3 style={{ margin: '0 0 8px 0', color: '#2c3e50' }}>{secilenIhbar.baslik}</h3>
+                    <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Konum:</strong> {secilenIhbar.konum}</p>
+                    <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Bildiren:</strong> {secilenIhbar.bildiren} ({secilenIhbar.rozet})</p>
+                    <p style={{ margin: '4px 0', fontSize: '14px' }}><strong>Tarih:</strong> {secilenIhbar.tarih}</p>
                   </div>
-                )}
+                </div>
+
+                <div style={{ flex: 1, backgroundColor: '#e3edf7', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4a69bd', minHeight: '120px', border: '1px dashed #4a69bd' }}>
+                  <strong>🗺️ GPS Canlı Harita Takibi Aktif ({secilenIhbar.konum})</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  {secilenIhbar.durum === 'Beklemede' ? (
+                    <button onClick={() => sorunuCoz(secilenIhbar.id)} style={{ padding: '10px 20px', backgroundColor: '#2ecc71', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>
+                      Saha Ekibini Yönlendir & Çöz ✅
+                    </button>
+                  ) : (
+                    <div style={{ padding: '10px 20px', backgroundColor: '#e8f5e9', color: '#2ecc71', fontWeight: 'bold', borderRadius: '6px' }}>
+                      🎉 Sorun Başarıyla Çözüldü!
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
 
-        {/* 2. SEKME: ŞEFFAF HARİTA AKIŞI */}
+        {/* 2. SEKME: HARİTA */}
         {aktifSekme === 'harita' && (
           <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', flex: 1, display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <h3 style={{ margin: '0', color: '#2c3e50' }}>📍 Şeffaf Coğrafi Bilgi Haritası</h3>
-            <p style={{ fontSize: '14px', color: '#7f8c8d', margin: '0' }}>Tüm şehir genelindeki aktif çevre ihbar noktaları simüle ediliyor.</p>
             <div style={{ flex: 1, backgroundColor: '#cad2c5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '10px', minHeight: '350px' }}>
               <span style={{ fontSize: '40px' }}>🗺️</span>
               <strong style={{ color: '#2f3e46' }}>Genişletilmiş Uydu Harita Katmanı Yüklendi</strong>
-              <div style={{ fontSize: '13px', color: '#52796f', textAlign: 'center' }}>
-                🔴 İlkadım Noktası (1 Bekleyen) <br />
-                🔴 Atakum Noktası (1 Bekleyen) <br />
-                🟢 Canik Noktası (1 Çözüldü)
-              </div>
             </div>
           </div>
         )}
 
-        {/* 3. SEKME: LIDERLIK TABLOSU */}
+        {/* 3. SEKME: LİDERLİK */}
         {aktifSekme === 'liderlik' && (
           <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', flex: 1 }}>
             <h3 style={{ margin: '0 0 10px 0', color: '#2c3e50' }}>🏆 En Çok Katkı Sağlayan Çevre Gönüllüleri</h3>
-            <p style={{ fontSize: '14px', color: '#7f8c8d', marginBottom: '20px' }}>İhbarları çözüldükçe Yeşil Puan (WP) kazanan mahalle sakinleri liderlik tablosu.</p>
-            
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #e2e8f0' }}>
@@ -276,7 +276,7 @@ function App() {
               </thead>
               <tbody>
                 {liderler.map((lider) => (
-                  <tr key={lider.sira} style={{ borderBottom: '1px solid #e2e8f0', transition: '0.2s' }}>
+                  <tr key={lider.sira} style={{ borderBottom: '1px solid #e2e8f0' }}>
                     <td style={{ padding: '12px', fontWeight: 'bold', color: lider.sira === 1 ? '#f1c40f' : '#2c3e50' }}>#{lider.sira}</td>
                     <td style={{ padding: '12px', fontWeight: '500' }}>{lider.isim}</td>
                     <td style={{ padding: '12px' }}>{lider.rozet}</td>
@@ -291,7 +291,7 @@ function App() {
 
       </div>
 
-      {/* ŞİKAYET FORMU BAĞLANTISI BURAYA EKLENDİ */}
+      {/* ŞİKAYET FORMU BAĞLANTISI */}
       <SikayetFormu modalAcik={modalAcik} setModalAcik={setModalAcik} onSikayetEkle={haneSikayetEkle} />
 
     </div>
