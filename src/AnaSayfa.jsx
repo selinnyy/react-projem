@@ -63,4 +63,3 @@ export default function AnaSayfa({ setAktifSekme, toplamIhbar, cozulenSayisi }) 
     </div>
   );
 }
-//yarın iki menü düzeltilicek
