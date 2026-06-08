@@ -1,5 +1,12 @@
 /* AnaSayfa.css */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+/* 1. Tüm sayfanın arka planını açık yeşil yap */
+body, #root, .page-wrapper {
+  background-color: #5ee86a !important; /* Açık yeşil tonu */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
 
 .home-wrapper {
   min-height: 100vh;
@@ -9,7 +16,7 @@
   align-items: center;
   justify-content: center;
   /* Canlı, açık ve ferah bahar yeşili geçişi */
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  background: linear-gradient(135deg, #09c319 0%, #c8e6c9 100%);
   padding: 40px 20px;
   color: #1b5e20;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -77,3 +84,78 @@
 .sidebar a:hover { background: #2e7d32; }
 .main-content { transition: 0.4s; padding: 20px; }
 .page-wrapper.menu-open .main-content { margin-left: 280px; }
+
+.ba-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* İçerikleri yatayda ortalar */
+  margin: 0 auto; /* Sayfanın genelinde ortalar */
+}
+
+.button-container {
+  display: flex;         /* Esnek kutu modelini aktif eder */
+  justify-content: center; /* Yatay eksende ortalar */
+  width: 100%;           /* Kapsayıcının tam genişliği kaplamasını sağlar */
+  margin-top: 20px;      /* Yukarıdan boşluk bırakır */
+}
+
+/* AnaSayfa.css */
+
+/* Genel kapsayıcıyı ortala */
+.ba-container, .stats-row {
+  display: flex;
+  justify-content: center; /* Yatayda ortalar */
+  align-items: center;     /* Dikeyde ortalar */
+  flex-wrap: wrap;         /* Ekran daraldığında alt alta geçmesini sağlar */
+  gap: 20px;               /* Ögeler arasına boşluk koyar */
+  width: 100%;             /* Sayfayı tam kaplasın */
+  margin: 0 auto;          /* Sayfayı ortalar */
+}
+
+/* Her bir istatistik kutusu için */
+.stat-item {
+  display: flex;
+  flex-direction: column; /* Sayı ve yazıyı alt alta dizer */
+  align-items: center;    /* Kendi içinde ortalar */
+  padding: 20px;
+}
+
+button {
+  transition: all 0.3s ease; /* Yumuşak geçiş sağlar */
+}
+
+button:hover {
+  transform: scale(1.05); /* Üzerine gelince hafif büyür */
+  background-color: #2e5a2e; /* Rengi biraz koyulaştırır */
+  cursor: pointer;
+}
+
+.stat-item {
+  background: white;
+  padding: 20px;
+  border-radius: 15px; /* Kenarları yumuşatır */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Hafif, şık bir gölge ekler */
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.ana-container {
+  background: linear-gradient(135deg, #f0f7f0 0%, #ffffff 100%);
+}
+
+.ba-images img:hover {
+  filter: brightness(110%);
+  border: 2px solid #6b9e6b;
+}
+
+/* Fotoğrafları belirgin hale getiren CSS */
+.img-box img {
+  width: 300px !important;  /* Genişliği zorunlu kıl */
+  height: 250px !important; /* Yüksekliği zorunlu kıl */
+  object-fit: cover;        /* Fotoğrafı kutuya tam sığdır */
+  display: block;
+  border-radius: 15px;      /* Köşeleri yuvarlat */
+  border: 2px solid #ccc;   /* Bir çerçeve ekle ki görünüp görünmediğini anlayalım */
+}
