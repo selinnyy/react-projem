@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SikayetFormu from './SikayetFormu.jsx';
 import AnaSayfa from './AnaSayfa.jsx'; // Yeni oluşturduğumuz sayfa eklendi
-import TopStats from './components/TopStats';
+import TopStats from './components/TopStats';//
 
 function App() {
   // Canlı İhbar Verileri
